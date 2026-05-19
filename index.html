@@ -1,234 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  <title>E-Waste Escape</title>
-  <meta name="description" content="A retro pixel-art arcade game about e-waste, recycling, and sustainability. Play as Nova and save the planet!" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♻️</text></svg>" />
+  <title>E-Waste Escape | By Asher King</title>
+  <meta name="description"
+    content="A retro pixel-art arcade game about e-waste, recycling, and sustainability. Play as Nova and save the planet!" />
+  <link rel="icon" type="image/x-icon" href="icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <script>
-    document.documentElement.dataset.theme = localStorage.getItem('ewaste_escape_theme') || 'colorful';
-  </script>
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
 
-<!-- CRT overlay -->
-<div id="crt-overlay"></div>
-<div id="scanlines"></div>
+  <button id="btn-fullscreen-help" class="corner-btn corner-help" type="button" aria-label="Fullscreen help">?</button>
+  <button id="btn-github-help" class="corner-btn corner-github" type="button" aria-label="GitHub" title="Source code on GitHub">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path fill="#fff" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.11.78-.25.78-.55 0-.27-.01-1-.02-1.96-3.2.7-3.88-1.54-3.88-1.54-.53-1.36-1.3-1.72-1.3-1.72-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.73 1.27 3.4.97.11-.76.41-1.27.75-1.56-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.2-3.1-.12-.3-.52-1.52.11-3.17 0 0 .98-.31 3.2 1.19a11.1 11.1 0 0 1 2.92-.39c.99.01 1.99.13 2.92.39 2.22-1.5 3.2-1.19 3.2-1.19.63 1.65.23 2.87.11 3.17.75.81 1.2 1.84 1.2 3.1 0 4.43-2.69 5.4-5.25 5.68.42.36.8 1.08.8 2.18 0 1.58-.01 2.86-.01 3.25 0 .3.21.67.79.55C20.71 21.39 24 17.08 24 12 24 5.65 18.35.5 12 .5z"/>
+    </svg>
+  </button>
 
-<!-- Main game canvas -->
-<canvas id="gameCanvas"></canvas>
+  <!-- CRT overlay -->
+  <div id="crt-overlay"></div>
+  <div id="scanlines"></div>
 
-<!-- HUD (shown during gameplay) -->
-<div id="hud" class="hidden">
-  <div id="hud-left">
-    <div class="hud-label">HEALTH</div>
-    <div id="health-bar-container">
-      <div id="health-bar"></div>
-    </div>
-    <div class="hud-label">ENERGY</div>
-    <div id="energy-bar-container">
-      <div id="energy-bar"></div>
-    </div>
-  </div>
-  <div id="hud-center">
-    <div class="hud-label">SCORE</div>
-    <div id="score-display">000000</div>
-    <div id="combo-display" class="hidden">COMBO x<span id="combo-count">1</span></div>
-  </div>
-  <div id="hud-right">
-    <div class="hud-label">LEVEL</div>
-    <div id="level-display">1</div>
-    <div id="mission-panel">
-      <div class="hud-label">MISSION</div>
-      <div id="mission-text">Collect recyclables</div>
-      <div id="mission-progress">0/10</div>
-    </div>
-  </div>
-  <div id="powerup-indicators"></div>
-</div>
+  <!-- Main game canvas -->
+  <canvas id="gameCanvas"></canvas>
 
-<!-- Boss health bar -->
-<div id="boss-hud" class="hidden">
-  <div id="boss-name">SMOKE CRUSHER</div>
-  <div id="boss-health-container">
-    <div id="boss-health-bar"></div>
-  </div>
-</div>
+  <!-- HUD (shown during gameplay) -->
 
-<!-- Main Menu Screen -->
-<div id="main-menu" class="screen">
-  <div class="theme-picker" aria-label="Theme">
-    <span class="theme-picker-label">THEME</span>
-    <button class="theme-option active" id="theme-colorful" type="button" data-theme-choice="colorful" aria-pressed="true">COLOR</button>
-    <button class="theme-option" id="theme-neon" type="button" data-theme-choice="neon" aria-pressed="false">NEON</button>
+  <div id="hud" class="hidden">
+    <div id="hud-left">
+      <div class="hud-label">HEALTH</div>
+      <div id="health-bar-container">
+        <div id="health-bar"></div>
+      </div>
+      <div class="hud-label">ENERGY</div>
+      <div id="energy-bar-container">
+        <div id="energy-bar"></div>
+      </div>
+    </div>
+    <div id="hud-center">
+      <div class="hud-label">SCORE</div>
+      <div id="score-display">000000</div>
+      <button id="hud-pause-btn" type="button" aria-label="Pause">Ⅱ</button>
+      <div id="combo-display" class="hidden">COMBO x<span id="combo-count">1</span></div>
+    </div>
+    <div id="hud-right">
+      <div class="hud-label">LEVEL</div>
+      <div id="level-display">1</div>
+      <div id="mission-panel">
+        <div class="hud-label">MISSION</div>
+        <div id="mission-text">Collect recyclables</div>
+        <div id="mission-progress">0/10</div>
+      </div>
+      <div id="fps-display">FPS 000</div>
+    </div>
+    <div id="powerup-indicators"></div>
   </div>
-  <div class="screen-content">
-    <div class="title-container">
-      <div class="title-glow">E-WASTE</div>
-      <div class="title-main">ESCAPE</div>
-      <div class="title-sub">♻ SAVE THE PLANET ♻</div>
-    </div>
-    <div class="menu-buttons">
-      <button class="menu-btn" id="btn-play">▶ PLAY GAME</button>
-      <button class="menu-btn" id="btn-story">📖 STORY</button>
-      <button class="menu-btn" id="btn-levels">🗺 SELECT LEVEL</button>
-      <button class="menu-btn" id="btn-highscores">🏆 HIGH SCORES</button>
-      <button class="menu-btn" id="btn-how-to-play">❓ HOW TO PLAY</button>
-    </div>
-    <div class="menu-footer">
-      <span id="menu-fact" class="fact-ticker"></span>
+
+  <!-- Boss health bar -->
+  <div id="boss-hud" class="hidden">
+    <div id="boss-name">SMOKE CRUSHER</div>
+    <div id="boss-health-container">
+      <div id="boss-health-bar"></div>
     </div>
   </div>
-</div>
 
-<!-- Story Screen -->
-<div id="story-screen" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title">◈ THE STORY ◈</div>
-    <div class="story-text">
-      <p>Year 2145. Earth has become a graveyard of electronic waste.</p>
-      <p>Giant corporations abandoned billions of broken devices, poisoning oceans, soil and air with toxic chemicals.</p>
-      <p>You are <span class="highlight">NOVA</span> — a young scavenger and repair engineer who joins the underground resistance: <span class="highlight">THE GREEN CIRCUIT</span>.</p>
-      <p>Nova discovers an ancient <span class="highlight">RECYCLING CORE</span> capable of restoring the planet — but only if you can:</p>
-      <ul>
-        <li>♻ Collect and recycle electronic devices</li>
-        <li>🔧 Repair broken technology</li>
-        <li>⚡ Defeat the giant pollution machines</li>
-        <li>🌍 Restore balance to the ecosystem</li>
-      </ul>
-      <p>The fate of Earth is in your hands.</p>
+  <!-- Main Menu Screen -->
+  <div id="main-menu" class="screen">
+    <div class="screen-content">
+      <div class="title-container">
+        <div class="title-glow">E-WASTE</div>
+        <div class="title-main">ESCAPE</div>
+        <div class="title-sub">♻ SAVE THE PLANET ♻</div>
+        <img class="menu-icon" src="./icon.png" alt="E-Waste Escape icon" />
+      </div>
+      <div class="menu-buttons">
+        <button class="menu-btn" id="btn-levels">🗺 SELECT LEVEL</button>
+        <button class="menu-btn" id="btn-play">▶ PLAY GAME</button>
+        <button class="menu-btn" id="btn-world">🌍 WORLD MODE</button>
+        <button class="menu-btn" id="btn-story">📖 STORY</button>
+        <button class="menu-btn" id="btn-highscores">🏆 HIGH SCORES</button>
+        <button class="menu-btn" id="btn-how-to-play">❓ HOW TO PLAY</button>
+      </div>
+      <div class="menu-footer">
+        <span id="menu-fact" class="fact-ticker"></span>
+      </div>
     </div>
-    <button class="menu-btn" id="btn-story-back">◀ BACK</button>
   </div>
-</div>
 
-<!-- Level Select Screen -->
-<div id="level-select" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title">◈ SELECT LEVEL ◈</div>
-    <div class="level-grid" id="level-grid"></div>
-    <button class="menu-btn" id="btn-levels-back">◀ BACK</button>
-  </div>
-</div>
-
-<!-- High Scores Screen -->
-<div id="highscores-screen" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title">◈ HIGH SCORES ◈</div>
-    <div id="scores-list"></div>
-    <button class="menu-btn" id="btn-scores-back">◀ BACK</button>
-  </div>
-</div>
-
-<!-- How to Play Screen -->
-<div id="howto-screen" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title">◈ HOW TO PLAY ◈</div>
-    <div class="howto-grid">
-      <div class="howto-item"><span class="key">SPACE / ↑</span><span>Jump</span></div>
-      <div class="howto-item"><span class="key">SPACE x2</span><span>Double Jump</span></div>
-      <div class="howto-item"><span class="key">↓ / S</span><span>Slide</span></div>
-      <div class="howto-item"><span class="key">SHIFT</span><span>Dash</span></div>
-      <div class="howto-item"><span class="key">E</span><span>EMP Blast</span></div>
-      <div class="howto-item"><span class="key">P / ESC</span><span>Pause</span></div>
-      <div class="howto-item"><span class="icon">📱</span><span>Collect devices = Points</span></div>
-      <div class="howto-item"><span class="icon">☠</span><span>Avoid toxic hazards</span></div>
-      <div class="howto-item"><span class="icon">⚡</span><span>Power-ups boost abilities</span></div>
-      <div class="howto-item"><span class="icon">💀</span><span>Defeat bosses to advance</span></div>
+  <div id="info-modal" class="screen hidden">
+    <div class="popup-box">
+      <div class="popup-title" id="info-modal-title"></div>
+      <div class="popup-text" id="info-modal-text"></div>
+      <button class="menu-btn hidden" id="info-modal-action" type="button"></button>
+      <button class="menu-btn" id="info-modal-close" type="button">CLOSE</button>
     </div>
-    <button class="menu-btn" id="btn-howto-back">◀ BACK</button>
   </div>
-</div>
 
-<!-- Level Intro Screen -->
-<div id="level-intro" class="screen hidden">
-  <div class="screen-content">
-    <div id="level-intro-number" class="screen-title"></div>
-    <div id="level-intro-name" class="level-title"></div>
-    <div id="level-intro-theme" class="level-theme"></div>
-    <div id="level-intro-mission" class="level-mission"></div>
-    <div id="level-intro-story" class="story-text"></div>
-    <button class="menu-btn" id="btn-intro-start">▶ BEGIN MISSION</button>
-  </div>
-</div>
-
-<!-- Educational Popup -->
-<div id="edu-popup" class="screen hidden">
-  <div class="popup-box">
-    <div class="popup-title" id="edu-popup-title">♻ DID YOU KNOW?</div>
-    <div class="popup-icon" id="edu-popup-icon">📊</div>
-    <div class="popup-text" id="edu-popup-text"></div>
-    <div id="quiz-container" class="hidden">
-      <div class="quiz-question" id="quiz-question"></div>
-      <div class="quiz-options" id="quiz-options"></div>
-      <div class="quiz-result hidden" id="quiz-result"></div>
+  <!-- Story Screen -->
+  <div id="story-screen" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title">◈ THE STORY ◈</div>
+      <div class="story-text">
+        <p>Year 2145. Earth has become a graveyard of electronic waste.</p>
+        <p>Giant corporations abandoned billions of broken devices, poisoning oceans, soil and air with toxic chemicals.
+        </p>
+        <p>You are <span class="highlight">NOVA</span> — a young scavenger and repair engineer who joins the underground
+          resistance: <span class="highlight">THE GREEN CIRCUIT</span>.</p>
+        <p>Nova discovers an ancient <span class="highlight">RECYCLING CORE</span> capable of restoring the planet — but
+          only if you can:</p>
+        <ul>
+          <li>♻ Collect and recycle electronic devices</li>
+          <li>🔧 Repair broken technology</li>
+          <li>⚡ Defeat the giant pollution machines</li>
+          <li>🌍 Restore balance to the ecosystem</li>
+        </ul>
+        <p>The fate of Earth is in your hands.</p>
+      </div>
+      <button class="menu-btn" id="btn-story-back">◀ BACK</button>
     </div>
-    <button class="menu-btn" id="btn-edu-continue">▶ CONTINUE</button>
+  </div>
+
+  <!-- Level Select Screen -->
+  <div id="level-select" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title">◈ SELECT LEVEL ◈</div>
+      <div class="level-grid" id="level-grid"></div>
+      <button class="menu-btn" id="btn-levels-back">◀ BACK</button>
+    </div>
+  </div>
+
+  <!-- High Scores Screen -->
+  <div id="highscores-screen" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title">◈ HIGH SCORES ◈</div>
+      <div id="scores-list"></div>
+      <button class="menu-btn" id="btn-scores-back">◀ BACK</button>
+    </div>
+  </div>
+
+  <!-- How to Play Screen -->
+  <div id="howto-screen" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title">◈ HOW TO PLAY ◈</div>
+      <div class="howto-grid">
+        <div class="howto-item"><span class="key">W / SPACE / ↑</span><span>Jump</span></div>
+        <div class="howto-item"><span class="key">SPACE x2</span><span>Double Jump</span></div>
+        <div class="howto-item"><span class="key">↓ / S</span><span>Fast Fall</span></div>
+        <div class="howto-item"><span class="key">SHIFT</span><span>Dash</span></div>
+        <div class="howto-item"><span class="key">E</span><span>EMP Blast</span></div>
+        <div class="howto-item"><span class="key">P / ESC</span><span>Pause</span></div>
+        <div class="howto-item"><span class="icon">📱</span><span>Collect devices = Points</span></div>
+        <div class="howto-item"><span class="icon">☠</span><span>Avoid toxic hazards</span></div>
+        <div class="howto-item"><span class="icon">⚡</span><span>Power-ups boost abilities</span></div>
+        <div class="howto-item"><span class="icon">💀</span><span>Defeat bosses to advance</span></div>
+      </div>
+      <button class="menu-btn" id="btn-howto-back">◀ BACK</button>
+    </div>
+  </div>
+
+  <!-- Level Intro Screen -->
+  <div id="level-intro" class="screen hidden">
+    <div class="screen-content">
+      <div id="level-intro-number" class="screen-title"></div>
+      <div id="level-intro-name" class="level-title"></div>
+      <div id="level-intro-theme" class="level-theme"></div>
+      <div id="level-intro-mission" class="level-mission"></div>
+      <div id="level-intro-story" class="story-text"></div>
+      <button class="menu-btn" id="btn-intro-start">▶ BEGIN MISSION</button>
+      <button class="menu-btn" id="btn-intro-back">◀ BACK</button>
+    </div>
+  </div>
+
+  <!-- Educational Popup -->
+  <div id="edu-popup" class="screen hidden">
+    <div class="popup-box">
+      <div class="popup-title" id="edu-popup-title">♻ DID YOU KNOW?</div>
+      <div class="popup-icon" id="edu-popup-icon">📊</div>
+      <div class="popup-text" id="edu-popup-text"></div>
+      <div id="quiz-container" class="hidden">
+        <div class="quiz-question" id="quiz-question"></div>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-result hidden" id="quiz-result"></div>
+      </div>
+      <button class="menu-btn" id="btn-edu-continue">▶ CONTINUE</button>
+    </div>
+  </div>
+
+  <!-- Boss Warning -->
+  <div id="boss-warning" class="screen hidden">
+    <div class="boss-warning-content">
+      <div class="warning-text">⚠ WARNING ⚠</div>
+      <div class="boss-warning-name" id="boss-warning-name"></div>
+      <div class="boss-warning-sub">BOSS INCOMING!</div>
+      <div class="boss-warning-desc" id="boss-warning-desc"></div>
+    </div>
+  </div>
+
+  <!-- Pause Menu -->
+  <div id="pause-menu" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title">⏸ PAUSED</div>
+      <button class="menu-btn" id="btn-resume">▶ RESUME</button>
+      <button class="menu-btn" id="btn-restart">↺ RESTART LEVEL</button>
+      <button class="menu-btn" id="btn-pause-fullscreen">⛶ FULLSCREEN</button>
+      <button class="menu-btn" id="btn-quit">⌂ MAIN MENU</button>
+    </div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameover-screen" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title gameover-title">✖ GAME OVER ✖</div>
+      <div class="gameover-msg" id="gameover-msg">Nova has fallen. The e-waste continues to grow...</div>
+      <div class="score-display" id="final-score-display"></div>
+      <div id="gameover-fact" class="fact-box"></div>
+      <button class="menu-btn" id="btn-retry">↺ TRY AGAIN</button>
+      <button class="menu-btn" id="btn-go-menu">⌂ MAIN MENU</button>
+    </div>
+  </div>
+
+  <!-- Victory Screen -->
+  <div id="victory-screen" class="screen hidden">
+    <div class="screen-content">
+      <div class="screen-title victory-title">✦ VICTORY! ✦</div>
+      <div class="victory-msg">The Recycling Core is online!</div>
+      <div class="victory-story">Nova activated the ancient recycling core. The Green Circuit broadcasts the signal
+        across the globe. Mountains of e-waste begin to dissolve. The Earth breathes again.</div>
+      <div class="score-display" id="victory-score-display"></div>
+      <div id="high-score-notice" class="hidden">🏆 NEW HIGH SCORE!</div>
+      <button class="menu-btn" id="btn-play-again">↺ PLAY AGAIN</button>
+      <button class="menu-btn" id="btn-victory-menu">⌂ MAIN MENU</button>
   </div>
 </div>
 
-<!-- Boss Warning -->
-<div id="boss-warning" class="screen hidden">
-  <div class="boss-warning-content">
-    <div class="warning-text">⚠ WARNING ⚠</div>
-    <div class="boss-warning-name" id="boss-warning-name"></div>
-    <div class="boss-warning-sub">BOSS INCOMING!</div>
-    <div class="boss-warning-desc" id="boss-warning-desc"></div>
-  </div>
+<div id="world-info-prompt" class="hidden">
+  <button class="menu-btn" id="btn-open-info">OPEN INFO</button>
 </div>
 
-<!-- Pause Menu -->
-<div id="pause-menu" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title">⏸ PAUSED</div>
-    <button class="menu-btn" id="btn-resume">▶ RESUME</button>
-    <button class="menu-btn" id="btn-restart">↺ RESTART LEVEL</button>
-    <button class="menu-btn" id="btn-quit">⌂ MAIN MENU</button>
-  </div>
-</div>
-
-<!-- Game Over Screen -->
-<div id="gameover-screen" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title gameover-title">✖ GAME OVER ✖</div>
-    <div class="gameover-msg" id="gameover-msg">Nova has fallen. The e-waste continues to grow...</div>
-    <div class="score-display" id="final-score-display"></div>
-    <div id="gameover-fact" class="fact-box"></div>
-    <button class="menu-btn" id="btn-retry">↺ TRY AGAIN</button>
-    <button class="menu-btn" id="btn-go-menu">⌂ MAIN MENU</button>
-  </div>
-</div>
-
-<!-- Victory Screen -->
-<div id="victory-screen" class="screen hidden">
-  <div class="screen-content">
-    <div class="screen-title victory-title">✦ VICTORY! ✦</div>
-    <div class="victory-msg">The Recycling Core is online!</div>
-    <div class="victory-story">Nova activated the ancient recycling core. The Green Circuit broadcasts the signal across the globe. Mountains of e-waste begin to dissolve. The Earth breathes again.</div>
-    <div class="score-display" id="victory-score-display"></div>
-    <div id="high-score-notice" class="hidden">🏆 NEW HIGH SCORE!</div>
-    <button class="menu-btn" id="btn-play-again">↺ PLAY AGAIN</button>
-    <button class="menu-btn" id="btn-victory-menu">⌂ MAIN MENU</button>
-  </div>
-</div>
+<button id="world-zoom-btn" class="hidden" type="button">ZOOM 1/3</button>
 
 <!-- Mobile Touch Controls -->
 <div id="touch-controls" class="hidden">
   <div class="touch-left">
-    <button class="touch-btn" id="touch-slide">▼ SLIDE</button>
-  </div>
-  <div class="touch-right">
-    <button class="touch-btn touch-jump" id="touch-jump">▲ JUMP</button>
-    <button class="touch-btn" id="touch-dash">⚡ DASH</button>
-    <button class="touch-btn" id="touch-emp">💥 EMP</button>
+    <button class="touch-btn touch-power" id="touch-dash">⚡ DASH</button>
+    <button class="touch-btn touch-power" id="touch-emp">💥 EMP</button>
+    </div>
+    <div class="touch-right">
+      <button class="touch-btn touch-move touch-jump" id="touch-jump">▲ JUMP</button>
+    <button class="touch-btn touch-move" id="touch-slide">▼ DOWN</button>
   </div>
 </div>
 
-<script src="./script.js"></script>
+<div id="world-touch-controls" class="hidden">
+  <div class="world-dpad">
+    <button class="touch-btn world-dir world-corner" data-world-dir="up-left">↖</button>
+    <button class="touch-btn world-dir" data-world-dir="up">▲</button>
+    <button class="touch-btn world-dir world-corner" data-world-dir="up-right">↗</button>
+    <button class="touch-btn world-dir" data-world-dir="left">◀</button>
+    <div class="world-dpad-center"></div>
+    <button class="touch-btn world-dir" data-world-dir="right">▶</button>
+    <button class="touch-btn world-dir world-corner" data-world-dir="down-left">↙</button>
+    <button class="touch-btn world-dir" data-world-dir="down">▼</button>
+    <button class="touch-btn world-dir world-corner" data-world-dir="down-right">↘</button>
+  </div>
+  <div class="world-actions">
+    <button class="touch-btn touch-power" id="world-touch-dash">⚡ DASH</button>
+    <button class="touch-btn touch-power" id="world-touch-emp">💥 EMP</button>
+  </div>
+</div>
+
+  <script src="./script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
+
 </html>
