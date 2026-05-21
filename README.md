@@ -16,6 +16,8 @@ Nova joins an underground resistance group called The Green Circuit. Their missi
 
 Across four levels, Nova must survive toxic alleys, battery graveyards, ruined repair districts, and MegaDump City before facing the Waste Titan in the final battle for Earth.
 
+![GIF clip2](clip2.gif)
+
 ## How To Play
 
 Your goal is to complete each level mission, survive the hazards, and defeat the boss that appears afterward.
@@ -40,6 +42,8 @@ Gameplay basics:
 - Complete the mission target to trigger the boss fight.
 - Defeat each boss to unlock the next level.
 
+![GIF clip3](clip3.gif)
+
 ## Levels
 
 | Level | Name              | Mission                               | Boss                |
@@ -48,6 +52,8 @@ Gameplay basics:
 | 2     | Battery Graveyard | Collect 100 batteries safely          | Acid Core           |
 | 3     | Repair District   | Repair 150 broken devices             | Obsolescence Engine |
 | 4     | MegaDump City     | Collect 200 recycling core components | Waste Titan         |
+
+![GIF clip1](clip1.gif)
 
 ## Running Locally
 
