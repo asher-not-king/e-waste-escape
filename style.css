@@ -360,6 +360,9 @@ body.runner-mode-active .corner-mute {
     bottom: 18px;
     transform: none;
   }
+  body.boss-mode-active .corner-mute {
+    display: none;
+  }
 }
 
 /* Ensure world info prompt sits above the zoom button and is fixed on desktop */
