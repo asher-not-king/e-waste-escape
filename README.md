@@ -1,5 +1,7 @@
 # E-Waste Escape
 
+![E-Waste Escape Banner](banner.png)
+
 E-Waste Escape is a retro pixel-art web game about electronic waste, repair, recycling, and sustainability. You play as Nova, a scavenger and repair engineer fighting through polluted tech ruins to recover recyclable devices, repair broken equipment, and restart the ancient Recycling Core.
 
 The game runs in the browser with vanilla HTML, CSS, and JavaScript. No build step is required.
