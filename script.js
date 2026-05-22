@@ -365,6 +365,11 @@ const Audio = {
   enabled: true,
   muted: false,
   prefKey: "ewaste_escape_audio_muted",
+  
+  // --- NEW BGM PROPERTIES ---
+  bgmNode: null, 
+  currentTrackPath: "",
+
   loadPreference() {
     try {
       this.muted = localStorage.getItem(this.prefKey) === "1";
@@ -382,6 +387,11 @@ const Audio = {
     this.muted = !!muted;
     this.savePreference();
     this.updateButton();
+    
+    // Core addition: dynamically adjust running background tracks when mute is toggled
+    if (this.bgmNode) {
+      this.bgmNode.muted = this.muted;
+    }
   },
   toggleMute() {
     this.setMuted(!this.muted);
@@ -403,6 +413,49 @@ const Audio = {
       this.enabled = false;
     }
   },
+
+  // --- NEW BACKGROUND MUSIC METHODS ---
+  playBGM(audioPath) {
+    if (!this.enabled) return;
+    
+    // Don't restart the track if it's already actively playing
+    if (this.currentTrackPath === audioPath && this.bgmNode && !this.bgmNode.paused) {
+      return;
+    }
+
+    this.stopBGM();
+    this.currentTrackPath = audioPath;
+
+    // Use HTML5 Audio wrapped into Web Audio API for performance stream caching
+    this.bgmNode = new window.Audio(audioPath);
+    this.bgmNode.loop = true;
+    this.bgmNode.muted = this.muted;
+
+    try {
+      if (this.ctx && this.ctx.state === "suspended") {
+        // User gesture checks will handle initialization
+        return;
+      }
+      this.bgmNode.play().catch(() => {});
+    } catch (e) {
+      console.log("BGM playback deferred until click event context triggers.");
+    }
+  },
+
+  stopBGM() {
+    if (this.bgmNode) {
+      this.bgmNode.pause();
+      this.bgmNode.remove();
+      this.bgmNode = null;
+    }
+  },
+
+  resumeBGM() {
+    if (this.bgmNode && this.bgmNode.paused && !this.muted) {
+      this.bgmNode.play().catch(() => {});
+    }
+  },
+
   play(type, freq = 440, duration = 0.1, vol = 0.3) {
     if (!this.enabled || this.muted || !this.ctx) return;
     try {
@@ -462,9 +515,14 @@ const Audio = {
     this.play("sawtooth", 100, 0.3, 0.6);
     this.play("sine", 2000, 0.1, 0.4);
   },
-  resume() {
-    if (!this.muted && this.ctx && this.ctx.state === "suspended")
-      this.ctx.resume();
+ resume() {
+    if (!this.muted && this.ctx && this.ctx.state === "suspended") {
+      this.ctx.resume().then(() => {
+        this.resumeBGM();
+      });
+    } else {
+      this.resumeBGM();
+    }
   },
 };
 
@@ -2836,14 +2894,21 @@ class Game {
     document
       .getElementById("btn-how-to-play")
       ?.addEventListener("click", () => this.showScreen("howto-screen"));
+    // document.getElementById("btn-credits")?.addEventListener("click", () => {
+    //   this.showInfoModal(
+    //     "CREDITS",
+    //     "Creator details\nE-Waste Escape was created by Asher King as a retro arcade game about repair, recycling, and e-waste education.\n\nFont credits\nPress Start 2P by CodeMan38, served through Google Fonts.\n\nAsset credits\nGame icon, pixel-art objects, characters, enemies, bosses, backgrounds, and UI art are custom assets for this project.\n\nTools and libraries\nBuilt with vanilla HTML, CSS, JavaScript, Canvas, Web Audio, and privacy-focused GoatCounter analytics.",
+    //     null,
+    //     null,
+    //   );
     document.getElementById("btn-credits")?.addEventListener("click", () => {
-      this.showInfoModal(
-        "CREDITS",
-        "Creator details\nE-Waste Escape was created by Asher King as a retro arcade game about repair, recycling, and e-waste education.\n\nFont credits\nPress Start 2P by CodeMan38, served through Google Fonts.\n\nAsset credits\nGame icon, pixel-art objects, characters, enemies, bosses, backgrounds, and UI art are custom assets for this project.\n\nTools and libraries\nBuilt with vanilla HTML, CSS, JavaScript, Canvas, Web Audio, and privacy-focused GoatCounter analytics.",
-        null,
-        null,
-      );
-    });
+  this.showInfoModal(
+    "CREDITS",
+    "Creator details\nE-Waste Escape was created by Asher King...\n\nFont credits\nPress Start 2P...\n\nAsset credits\nGame icon, pixel-art objects...\n\nMusic Credits\n- 'Track Title' by Artist Name via Pixabay Music\n- 'Track Title 2' by Artist Name 2 via Pixabay Music\n\nTools and libraries...",
+    null,
+    null,
+  );
+});
     document
       .getElementById("btn-mute-toggle")
       ?.addEventListener("click", () => Audio.toggleMute());
@@ -3014,6 +3079,7 @@ class Game {
   // ==================
   initMenu() {
     this.state = "MENU";
+    Audio.playBGM("./bgm-menu.mp3");
     document.getElementById("hud")?.classList.add("hidden");
     document.getElementById("boss-hud")?.classList.add("hidden");
     document.getElementById("touch-controls")?.classList.add("hidden");
@@ -3112,6 +3178,8 @@ class Game {
     const levelId = this.currentLevel;
     const data = LEVEL_DATA[levelId - 1];
 
+    Audio.playBGM("./bgm-playing.mp3");
+
     // Reset game state
     this.score = 0;
     this.combo = 0;
@@ -3165,6 +3233,8 @@ class Game {
     clearTimeout(this._factTimeout);
     this.hideAllScreens();
     this.requestLandscape();
+
+    Audio.playBGM("./bgm-playing.mp3");
 
     this.state = "WORLD";
     this.score = 0;

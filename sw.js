@@ -6,6 +6,8 @@ const CORE_ASSETS = [
   './script.js',
   './icon.png',
   './robots.txt',
+  './bgm-menu.mp3',
+  './bgm-playing.mp3',
 ];
 
 self.addEventListener('install', event => {
